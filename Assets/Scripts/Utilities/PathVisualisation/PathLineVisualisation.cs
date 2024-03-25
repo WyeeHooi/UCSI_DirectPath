@@ -2,7 +2,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-public class PathLineVisualisation : MonoBehaviour {
+public class PathLineVisualisation : MonoBehaviour
+{
 
     [SerializeField]
     private NavigationController navigationController;
@@ -11,32 +12,44 @@ public class PathLineVisualisation : MonoBehaviour {
     [SerializeField]
     private Slider navigationYOffset;
 
+    [SerializeField]
+    private float lineWidth = 0.1f;
+
     private NavMeshPath path;
     private Vector3[] calculatedPathAndOffset;
 
-    private void Update() {
+    private void Update()
+    {
         path = navigationController.CalculatedPath;
         AddOffsetToPath();
         AddLineOffset();
         SetLineRendererPositions();
+        line.startWidth = lineWidth;
+        line.endWidth = lineWidth;
     }
 
-    private void AddOffsetToPath() {
+    private void AddOffsetToPath()
+    {
         calculatedPathAndOffset = new Vector3[path.corners.Length];
-        for (int i = 0; i < path.corners.Length; i++) {
+        for (int i = 0; i < path.corners.Length; i++)
+        {
             calculatedPathAndOffset[i] = new Vector3(path.corners[i].x, transform.position.y, path.corners[i].z);
         }
     }
 
-    private void AddLineOffset() {
-        if (navigationYOffset.value != 0) {
-            for (int i = 0; i < calculatedPathAndOffset.Length; i++) {
+    private void AddLineOffset()
+    {
+        if (navigationYOffset.value != 0)
+        {
+            for (int i = 0; i < calculatedPathAndOffset.Length; i++)
+            {
                 calculatedPathAndOffset[i] += new Vector3(0, navigationYOffset.value, 0);
             }
         }
     }
 
-    private void SetLineRendererPositions() {
+    private void SetLineRendererPositions()
+    {
         line.positionCount = calculatedPathAndOffset.Length;
         line.SetPositions(calculatedPathAndOffset);
     }

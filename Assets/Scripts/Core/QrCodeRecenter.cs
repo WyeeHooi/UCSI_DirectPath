@@ -1,11 +1,13 @@
 using Unity.Collections;
 using Unity.XR.CoreUtils;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.XR.ARSubsystems;
 using ZXing;
 
-public class QrCodeRecenter : MonoBehaviour {
+public class QrCodeRecenter : MonoBehaviour
+{
 
     [SerializeField]
     private ARSession session;
@@ -17,30 +19,60 @@ public class QrCodeRecenter : MonoBehaviour {
     private TargetHandler targetHandler;
     [SerializeField]
     private GameObject qrCodeScanningPanel;
+    [SerializeField]
+    private Button toggleQRCodeScanButton;
 
     private Texture2D cameraImageTexture;
     private IBarcodeReader reader = new BarcodeReader(); // create a barcode reader instance
     private bool scanningEnabled = false;
+    private bool firstLaunch = true;
 
-    private void OnEnable() {
+    private void OnEnable()
+    {
         cameraManager.frameReceived += OnCameraFrameReceived;
+        toggleQRCodeScanButton.onClick.AddListener(ToggleScanning); // Register ToggleScanningPanel() to the button's click event
     }
 
-    private void OnDisable() {
+    private void OnDisable()
+    {
         cameraManager.frameReceived -= OnCameraFrameReceived;
+        toggleQRCodeScanButton.onClick.RemoveListener(ToggleScanning); // Unregister ToggleScanningPanel() from the button's click event
     }
 
-    private void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs) {
+    private void Start()
+    {
+        // Ensure the scanning panel is active on the first launch
+        if (firstLaunch)
+        {
+            qrCodeScanningPanel.SetActive(true);
+            firstLaunch = false;
+            scanningEnabled = true;
+        }
+    }
 
-        if (!scanningEnabled) {
+    //private void OnEnable() {
+    //    cameraManager.frameReceived += OnCameraFrameReceived;
+    //}
+
+    //private void OnDisable() {
+    //    cameraManager.frameReceived -= OnCameraFrameReceived;
+    //}
+
+    private void OnCameraFrameReceived(ARCameraFrameEventArgs eventArgs)
+    {
+
+        if (!scanningEnabled)
+        {
             return;
         }
 
-        if (!cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image)) {
+        if (!cameraManager.TryAcquireLatestCpuImage(out XRCpuImage image))
+        {
             return;
         }
 
-        var conversionParams = new XRCpuImage.ConversionParams {
+        var conversionParams = new XRCpuImage.ConversionParams
+        {
             // Get the entire image.
             inputRect = new RectInt(0, 0, image.width, image.height),
 
@@ -87,15 +119,18 @@ public class QrCodeRecenter : MonoBehaviour {
         var result = reader.Decode(cameraImageTexture.GetPixels32(), cameraImageTexture.width, cameraImageTexture.height);
 
         // Do something with the result
-        if (result != null) {
+        if (result != null)
+        {
             SetQrCodeRecenterTarget(result.Text);
             ToggleScanning();
         }
     }
 
-    private void SetQrCodeRecenterTarget(string targetText) {
+    private void SetQrCodeRecenterTarget(string targetText)
+    {
         TargetFacade currentTarget = targetHandler.GetCurrentTargetByTargetText(targetText);
-        if (currentTarget != null) {
+        if (currentTarget != null)
+        {
             // Reset position and rotation of ARSession
             session.Reset();
 
@@ -105,11 +140,13 @@ public class QrCodeRecenter : MonoBehaviour {
         }
     }
 
-    public void ChangeActiveFloor(string floorEntrance) {
+    public void ChangeActiveFloor(string floorEntrance)
+    {
         SetQrCodeRecenterTarget(floorEntrance);
     }
 
-    public void ToggleScanning() {
+    public void ToggleScanning()
+    {
         scanningEnabled = !scanningEnabled;
         qrCodeScanningPanel.SetActive(scanningEnabled);
     }
