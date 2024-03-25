@@ -1,0 +1,5 @@
+C:/Users/Windows 10/Downloads/AR-Indoor-Navigation-App/.utmp/RelWithDebInfo/1nz13h5v/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/Windows 10/Downloads/AR-Indoor-Navigation-App/.utmp/RelWithDebInfo/1nz13h5v/arm64-v8a/CMakeFiles/rebuild_cache.dir
+C:/Users/Windows 10/Downloads/AR-Indoor-Navigation-App/.utmp/RelWithDebInfo/1nz13h5v/arm64-v8a/FramePacing/CMakeFiles/swappywrapper.dir
+C:/Users/Windows 10/Downloads/AR-Indoor-Navigation-App/.utmp/RelWithDebInfo/1nz13h5v/arm64-v8a/FramePacing/CMakeFiles/edit_cache.dir
+C:/Users/Windows 10/Downloads/AR-Indoor-Navigation-App/.utmp/RelWithDebInfo/1nz13h5v/arm64-v8a/FramePacing/CMakeFiles/rebuild_cache.dir
