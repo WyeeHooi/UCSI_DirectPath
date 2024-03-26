@@ -30,7 +30,7 @@ public class QrCodeRecenter : MonoBehaviour
     private void OnEnable()
     {
         cameraManager.frameReceived += OnCameraFrameReceived;
-        toggleQRCodeScanButton.onClick.AddListener(ToggleScanning); // Register ToggleScanningPanel() to the button's click event
+        /*toggleQRCodeScanButton.onClick.AddListener(ToggleScanning)*/; // Register ToggleScanningPanel() to the button's click event
     }
 
     private void OnDisable()
