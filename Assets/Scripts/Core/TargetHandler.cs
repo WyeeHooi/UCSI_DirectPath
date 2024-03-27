@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.UI.Extensions;
 
 public class TargetHandler : MonoBehaviour
 {
@@ -12,7 +15,8 @@ public class TargetHandler : MonoBehaviour
     private TextAsset targetModelData;
     [SerializeField]
     private TMP_Dropdown targetDataDropdown;
-
+    [SerializeField]
+    private AutoCompleteComboBox autoCompleteComboBox;
     [SerializeField]
     private GameObject targetObjectPrefab;
     [SerializeField]
@@ -24,6 +28,7 @@ public class TargetHandler : MonoBehaviour
     {
         GenerateTargetItems();
         FillDropdownWithTargetItems();
+        FillAutoCompleteComboBox();
     }
 
     private void GenerateTargetItems()
@@ -66,14 +71,40 @@ public class TargetHandler : MonoBehaviour
         targetDataDropdown.ClearOptions();
         targetDataDropdown.AddOptions(targetFacadeOptionData);
     }
-
     public void SetSelectedTargetPositionWithDropdown(int selectedValue)
     {
         navigationController.TargetPosition = GetCurrentlySelectedTarget(selectedValue);
     }
+    public void FillAutoCompleteComboBox()
+    {
+        List<string> targetOptions = currentTargetItems.Select(x => $"{x.Name}").ToList();
+        autoCompleteComboBox.SetAvailableOptions(targetOptions); // Set the available options for AutoCompleteComboBox
+        //autoCompleteComboBox.onItemSelected.AddListener(SetSelectedTargetPositionWithAutoCompleteComboBox()); // Add listener for item selection
+    }
+
+    public void SetSelectedTargetPositionWithAutoCompleteComboBox(InputField _mainInput)
+    {
+        string selectedItem = _mainInput.text;
+        TargetFacade target = GetCurrentTargetByTargetText(selectedItem);
+        if (target != null)
+        {
+            int index = currentTargetItems.IndexOf(target);
+            Debug.Log("Index of target: " + index);
+            if (index != -1)
+            {
+                navigationController.TargetPosition = GetCurrentlySelectedTarget(index);
+            }
+        }
+        
+    }
+
+
+
+   
 
     private Vector3 GetCurrentlySelectedTarget(int selectedValue)
     {
+        Debug.Log("ISelectedvalue: " + selectedValue);
         if (selectedValue >= currentTargetItems.Count)
         {
             return Vector3.zero;

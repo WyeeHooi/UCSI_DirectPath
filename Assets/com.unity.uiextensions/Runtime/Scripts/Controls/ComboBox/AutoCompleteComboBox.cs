@@ -3,9 +3,13 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 
 namespace UnityEngine.UI.Extensions
 {
+
     public enum AutoCompleteSearchType
     {
         ArraySort,
@@ -16,6 +20,13 @@ namespace UnityEngine.UI.Extensions
     [AddComponentMenu("UI/Extensions/AutoComplete ComboBox")]
     public class AutoCompleteComboBox : MonoBehaviour
     {
+        private List<string> _availableOptions = new List<string>();
+
+        // Event for item selection
+        public UnityEvent onItemSelected = new UnityEvent();
+
+
+
         public Color disabledTextColor;
         public DropDownListItem SelectedItem { get; private set; } //outside world gets to get this, not set it
 
@@ -289,7 +300,7 @@ namespace UnityEngine.UI.Extensions
 
             foreach (string option in AvailableOptions)
             {
-                _panelItems.Add(option.ToLower());
+                _panelItems.Add(option);
             }
 
             List<GameObject> itemObjs = new List<GameObject>(panelObjects.Values);
@@ -413,11 +424,10 @@ namespace UnityEngine.UI.Extensions
             Text = currText;
             PruneItems(currText);
             RedrawPanel();
-            //Debug.Log("value changed to: " + currText);
 
             if (_panelItems.Count == 0)
             {
-                _isPanelActive = true;//this makes it get turned off
+                _isPanelActive = true;
                 ToggleDropdownPanel(false);
             }
             else if (!_isPanelActive)
@@ -425,18 +435,20 @@ namespace UnityEngine.UI.Extensions
                 ToggleDropdownPanel(false);
             }
 
-			bool validity_changed = (_panelItems.Contains (Text) != _selectionIsValid);
-			_selectionIsValid = _panelItems.Contains (Text);
-			OnSelectionChanged.Invoke (Text, _selectionIsValid);
-			OnSelectionTextChanged.Invoke (Text);
-			if(validity_changed){
-				OnSelectionValidityChanged.Invoke (_selectionIsValid);
-			}
+            bool validity_changed = (_panelItems.Contains(Text) != _selectionIsValid);
+            _selectionIsValid = _panelItems.Contains(Text);
+            OnSelectionChanged.Invoke(Text, _selectionIsValid);
+            OnSelectionTextChanged.Invoke(Text);
+            if (validity_changed)
+            {
+                OnSelectionValidityChanged.Invoke(_selectionIsValid);
+            }
 
-			SetInputTextColor ();
+            SetInputTextColor();
         }
 
-		private void SetInputTextColor(){
+
+        private void SetInputTextColor(){
 			if (InputColorMatching) {
 				if (_selectionIsValid) {
 					_mainInput.textComponent.color = ValidSelectionTextColor;
@@ -483,7 +495,7 @@ namespace UnityEngine.UI.Extensions
 
         private void PruneItemsLinq(string currText)
         {
-            currText = currText.ToLower();
+            currText = currText;
             var toPrune = _panelItems.Where(x => !x.Contains(currText)).ToArray();
             foreach (string key in toPrune)
             {
@@ -504,12 +516,10 @@ namespace UnityEngine.UI.Extensions
         //Updated to not use Linq
         private void PruneItemsArray(string currText)
         {
-            string _currText = currText.ToLower();
-
             for (int i = _panelItems.Count - 1; i >= 0; i--)
             {
                 string _item = _panelItems[i];
-                if (!_item.Contains(_currText))
+                if (!_item.Contains(currText))
                 {
                     panelObjects[_panelItems[i]].SetActive(false);
                     _panelItems.RemoveAt(i);
@@ -519,13 +529,19 @@ namespace UnityEngine.UI.Extensions
             for (int i = _prunedPanelItems.Count - 1; i >= 0; i--)
             {
                 string _item = _prunedPanelItems[i];
-                if (_item.Contains(_currText))
+                if (_item.Contains(currText))
                 {
                     panelObjects[_prunedPanelItems[i]].SetActive(true);
                     _prunedPanelItems.RemoveAt(i);
                     _panelItems.Add(_item);
                 }
             }
+        }
+
+
+        internal void SetOptions(List<string> targetOptions)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

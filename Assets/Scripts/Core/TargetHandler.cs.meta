@@ -3,7 +3,12 @@ guid: 66b438122b6ba08439fa787bb3950909
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - navigationController: {instanceID: 0}
+  - targetModelData: {instanceID: 0}
+  - targetDataDropdown: {instanceID: 0}
+  - searchInputField: {instanceID: 0}
+  - targetObjectPrefab: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
