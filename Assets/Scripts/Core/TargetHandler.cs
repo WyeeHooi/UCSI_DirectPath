@@ -75,32 +75,58 @@ public class TargetHandler : MonoBehaviour
     {
         navigationController.TargetPosition = GetCurrentlySelectedTarget(selectedValue);
     }
+
+
+
+    /******* Search Bar Funtionality *******/
+
+    // This method populates the 'AutoCompleteComboBox' (the Unity Element) with options based on the 'currentTargetItems' list.
+    // 'currentTargetItems' list is a collection of objects (destination points) with each storing the destination name and position value 
+
     public void FillAutoCompleteComboBox()
     {
         List<string> targetOptions = currentTargetItems.Select(x => $"{x.Name}").ToList();
-        autoCompleteComboBox.SetAvailableOptions(targetOptions); // Set the available options for AutoCompleteComboBox
-        //autoCompleteComboBox.onItemSelected.AddListener(SetSelectedTargetPositionWithAutoCompleteComboBox()); // Add listener for item selection
+        // fetching all the Name property of each object in the 'currentTargetItems' list, and store them again into a list 'targetOptions'.
+        // the 'Select' LINQ method is used specifically on each object 'x' Name attribute which are then collected into a new list using ToList()
+        // 'x' represents an object of the currentTargetItems list 
+        
+        autoCompleteComboBox.SetAvailableOptions(targetOptions);
+        // Sets the available options for the 'AutoCompleteComboBox' Unity element using the targetOptions list.
+
+        // The available options for the 'AutoCompleteComboBox' is essentially to provide a set of options
+        // that are available for selection based on the user's keyword search.
+
+        // SetAvailableOptions method is called from another C# file by passing the destination Name list
+        // and get populated at the 'AutoCompleteCombobox' itempanel
     }
 
+
+    // This method reads the user's target location based on the text entered in the input field.
+    // Then, identify the target location position value on the virtual map
     public void SetSelectedTargetPositionWithAutoCompleteComboBox(InputField _mainInput)
-    {
+    {        
         string selectedItem = _mainInput.text;
+        // Retrieves the text entered in the input field.
+        
         TargetFacade target = GetCurrentTargetByTargetText(selectedItem);
+        // Finds the TargetFacade object corresponding to the selected item text.
+
         if (target != null)
         {
+            
             int index = currentTargetItems.IndexOf(target);
-            Debug.Log("Index of target: " + index);
+            // Retrieves the index of the target object in the currentTargetItems list.
+
             if (index != -1)
-            {
+            {                
                 navigationController.TargetPosition = GetCurrentlySelectedTarget(index);
+                // retrieve the target's position value using the index retrieved from the currentTargetItems list.
             }
         }
-        
     }
+    /******* Search Bar Funtionality Ends Here*******/
 
 
-
-   
 
     private Vector3 GetCurrentlySelectedTarget(int selectedValue)
     {
